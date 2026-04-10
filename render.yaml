@@ -26,7 +26,7 @@ services:
   - type: cron
     name: bookmark-nightly-email
     runtime: node
-    plan: free
+    plan: starter
     schedule: "0 5 * * *"  # midnight EST = 5:00 UTC
     buildCommand: echo "no build needed"
     startCommand: |
