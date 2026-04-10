@@ -14,6 +14,28 @@ services:
         sync: false
       - key: CLERK_SECRET_KEY
         sync: false
+      - key: CLERK_WEBHOOK_SECRET
+        sync: false
+      - key: RESEND_API_KEY
+        sync: false
+      - key: RESEND_FROM_EMAIL
+        sync: false
+      - key: CRON_SECRET
+        generateValue: true
+
+  - type: cron
+    name: bookmark-nightly-email
+    runtime: node
+    plan: free
+    schedule: "0 5 * * *"  # midnight EST = 5:00 UTC
+    buildCommand: echo "no build needed"
+    startCommand: |
+      curl -s -X POST https://bookmark-manager-6e02.onrender.com/api/cron/nightly-email \
+        -H "Authorization: Bearer $CRON_SECRET" \
+        -H "Content-Type: application/json"
+    envVars:
+      - key: CRON_SECRET
+        sync: false
 
 databases:
   - name: bookmark-db
