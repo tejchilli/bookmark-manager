@@ -9,8 +9,11 @@ datasource db {
 
 model Bookmark {
   id        String   @id @default(cuid())
+  userId    String
   url       String
   title     String
   tags      String[] @default([])
   createdAt DateTime @default(now())
+
+  @@index([userId])
 }

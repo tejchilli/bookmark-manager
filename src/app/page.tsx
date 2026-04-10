@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
+import { UserButton } from "@clerk/nextjs";
 
 interface Bookmark {
   id: string;
@@ -68,7 +69,10 @@ export default function Home() {
 
   return (
     <main className="max-w-3xl mx-auto px-4 py-10">
-      <h1 className="text-3xl font-bold mb-8">Bookmark Manager</h1>
+      <div className="flex items-center justify-between mb-8">
+        <h1 className="text-3xl font-bold">Bookmark Manager</h1>
+        <UserButton />
+      </div>
 
       {/* Add Bookmark Form */}
       <form onSubmit={handleSubmit} className="mb-8 space-y-3">

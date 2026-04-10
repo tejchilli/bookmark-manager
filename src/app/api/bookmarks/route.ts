@@ -1,11 +1,20 @@
 import { prisma } from "@/lib/prisma";
+import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
+  const { userId } = await auth();
+  if (!userId) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   const tag = request.nextUrl.searchParams.get("tag");
 
   const bookmarks = await prisma.bookmark.findMany({
-    where: tag ? { tags: { has: tag } } : undefined,
+    where: {
+      userId,
+      ...(tag ? { tags: { has: tag } } : {}),
+    },
     orderBy: { createdAt: "desc" },
   });
 
@@ -13,6 +22,11 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  const { userId } = await auth();
+  if (!userId) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   const body = await request.json();
   const { url, title, tags } = body;
 
@@ -25,6 +39,7 @@ export async function POST(request: NextRequest) {
 
   const bookmark = await prisma.bookmark.create({
     data: {
+      userId,
       url,
       title,
       tags: tags || [],
